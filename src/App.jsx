@@ -9,6 +9,7 @@ import DashboardComp from "./components/DashboardComp"
 import LandingPage from "./pages/LandingPage"
 import LogInPage from "./pages/LogInPage"
 import RegisterPage from "./pages/RegisterPage"
+import AccountPage from "./pages/AccountPage"
 
 // Protected Route wrapper
 function ProtectedRoute({ children }) {
@@ -30,6 +31,11 @@ function App() {
           <Route path="/dashboard" element={
             <ProtectedRoute>
               <DashboardComp/>
+            </ProtectedRoute>
+          } />
+          <Route path="/account" element={
+            <ProtectedRoute>
+              <AccountPage/>
             </ProtectedRoute>
           } />
 

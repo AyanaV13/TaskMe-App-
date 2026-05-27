@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useSettings } from '../context/SettingsContext'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
@@ -8,6 +10,7 @@ import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 import Table from 'react-bootstrap/Table'
 import Modal from 'react-bootstrap/Modal'
+import './DashboardComp.css'
 
 const MOCK_TASKS = [
   { id: 1, title: 'Design UI', description: 'Create mockups and component layouts.', priority: 'High', due: '2025-05-08', status: 'To Do', notes: '' },
@@ -33,11 +36,13 @@ function getGreeting() {
 }
 
 function StatCard({ label, value, color }) {
+  const { settings } = useSettings()
+  const isDark = settings.theme !== 'Light'
   return (
-    <Card bg="dark" text="white" style={{ border: '1px solid #333' }}>
-      <Card.Body className="text-center py-3">
-        <div style={{ fontSize: '28px', fontWeight: 700, color }}>{value}</div>
-        <div style={{ fontSize: '13px', color: '#aaa' }}>{label}</div>
+    <Card bg={isDark ? 'dark' : undefined} text={isDark ? 'white' : undefined} className="stat-card" style={{ borderTopColor: color }}>
+      <Card.Body className="text-center">
+        <div className="stat-card-value" style={{ color }}>{value}</div>
+        <div className="stat-card-label">{label}</div>
       </Card.Body>
     </Card>
   )
@@ -229,8 +234,31 @@ function TaskDetailModal({ task, onClose, onUpdate }) {
   )
 }
 
+const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+
+function isPastDue(due) {
+  if (!due) return false
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const dueDate = new Date(due + 'T00:00:00')
+  return dueDate < today
+}
+
+function getDateForDayName(dayName) {
+  const today = new Date()
+  const targetIndex = DAY_NAMES.indexOf(dayName)
+  const diff = targetIndex - today.getDay()
+  const target = new Date(today)
+  target.setDate(today.getDate() + diff)
+  return target.toISOString().split('T')[0]
+}
+
 function DashboardComp() {
   const { user } = useAuth()
+  const { settings } = useSettings()
+  const isDark = settings.theme !== 'Light'
+  const [searchParams, setSearchParams] = useSearchParams()
+  const dayFilter = searchParams.get('day')
   const [search, setSearch] = useState('')
   const [tasks, setTasks] = useState(() => {
     try {
@@ -242,6 +270,8 @@ function DashboardComp() {
   })
   const [showAddModal, setShowAddModal] = useState(false)
   const [selectedTask, setSelectedTask] = useState(null)
+  const [statusFilter, setStatusFilter] = useState('All')
+  const [priorityFilter, setPriorityFilter] = useState('All')
 
   useEffect(() => {
     localStorage.setItem('taskme_tasks', JSON.stringify(tasks))
@@ -253,10 +283,15 @@ function DashboardComp() {
   }
 
   const addTask = (task) => setTasks((prev) => [...prev, task])
+  const deleteTask = (id) => setTasks((prev) => prev.filter((t) => t.id !== id))
 
-  const filtered = tasks.filter((t) =>
-    t.title.toLowerCase().includes(search.toLowerCase())
-  )
+  const filtered = tasks.filter((t) => {
+    const matchSearch = t.title.toLowerCase().includes(search.toLowerCase())
+    const matchStatus = statusFilter === 'All' || t.status === statusFilter
+    const matchPriority = priorityFilter === 'All' || t.priority === priorityFilter
+    const matchDay = !dayFilter || t.due === getDateForDayName(dayFilter)
+    return matchSearch && matchStatus && matchPriority && matchDay
+  })
 
   const total = tasks.length
   const toDo = tasks.filter((t) => t.status === 'To Do').length
@@ -270,16 +305,25 @@ function DashboardComp() {
   }
 
   return (
-    <Container className="py-4" style={{ maxWidth: '900px' }}>
+    <div className="dashboard-page">
+    <Container className="dashboard-wrapper">
       {/* Greeting */}
       <div className="mb-4">
-        <h4 style={{ fontWeight: 600 }}>
+        <h4 className="dashboard-greeting-title">
           {getGreeting()}, {user?.name} 👋
         </h4>
-        <p style={{ color: '#aaa', fontSize: '14px', margin: 0 }}>
+        <p className="dashboard-greeting-sub">
           Here's an overview of your tasks today.
         </p>
       </div>
+
+      {/* Day filter banner */}
+      {dayFilter && (
+        <div className="day-filter-banner mb-3">
+          <span>Showing tasks for <strong>{dayFilter}</strong></span>
+          <button className="day-filter-clear" onClick={() => setSearchParams({})}>✕ Clear</button>
+        </div>
+      )}
 
       {/* Stat cards */}
       <Row className="g-3 mb-4">
@@ -290,33 +334,58 @@ function DashboardComp() {
       </Row>
 
       {/* Task controls */}
-      <div className="d-flex justify-content-between align-items-center mb-3 gap-2 flex-wrap">
+      <div className="controls-row mb-3">
         <Button variant="primary" size="sm" onClick={() => setShowAddModal(true)}>+ Add Task</Button>
-        <Form.Control
-          type="text"
-          placeholder="Search tasks..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          style={{ maxWidth: '220px', background: '#2a2a2a', border: '1px solid #444', color: 'white' }}
-          size="sm"
-        />
+        <div className="filter-group">
+          <Form.Select
+            size="sm"
+            className="filter-select"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <option>All</option>
+            <option>To Do</option>
+            <option>In Progress</option>
+            <option>Done</option>
+          </Form.Select>
+          <Form.Select
+            size="sm"
+            className="filter-select"
+            value={priorityFilter}
+            onChange={(e) => setPriorityFilter(e.target.value)}
+          >
+            <option>All</option>
+            <option>High</option>
+            <option>Medium</option>
+            <option>Low</option>
+          </Form.Select>
+          <Form.Control
+            type="text"
+            placeholder="🔍 Search..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="search-input"
+            size="sm"
+          />
+        </div>
       </div>
 
       {/* Task table */}
-      <Card bg="dark" style={{ border: '1px solid #333' }}>
-        <Table variant="dark" hover responsive className="mb-0" style={{ fontSize: '14px' }}>
-          <thead style={{ borderBottom: '1px solid #444' }}>
+      <Card bg={isDark ? 'dark' : undefined} className="task-table-card">
+        <Table variant={isDark ? 'dark' : undefined} hover responsive className="mb-0 task-table" style={{ fontSize: '14px' }}>
+          <thead>
             <tr>
               <th>Title</th>
               <th>Priority</th>
               <th>Due</th>
               <th>Status</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={4} className="text-center text-secondary py-4">No tasks found.</td>
+                <td colSpan={5} className="text-center text-secondary py-4">No tasks found.</td>
               </tr>
             ) : (
               filtered.map((task) => (
@@ -325,7 +394,12 @@ function DashboardComp() {
                     style={{ cursor: 'pointer', color: '#6ea8fe' }}
                     onClick={() => setSelectedTask(task)}
                   >
-                    {task.title}
+                    <span className="d-flex align-items-center gap-2">
+                      {task.title}
+                      {task.status !== 'Done' && isPastDue(task.due) && (
+                        <span className="past-due-pill">past due</span>
+                      )}
+                    </span>
                   </td>
                   <td>
                     <div className="d-flex align-items-center gap-2">
@@ -342,7 +416,7 @@ function DashboardComp() {
                         value={task.priority}
                         onChange={(e) => updateTask(task.id, 'priority', e.target.value)}
                         onClick={(e) => e.stopPropagation()}
-                        style={{ background: '#2a2a2a', border: '1px solid #444', color: 'white', width: 'auto' }}
+                        className="table-select"
                       >
                         <option>High</option>
                         <option>Medium</option>
@@ -357,18 +431,29 @@ function DashboardComp() {
                       value={task.status}
                       onChange={(e) => updateTask(task.id, 'status', e.target.value)}
                       onClick={(e) => e.stopPropagation()}
-                      style={{ background: '#2a2a2a', border: '1px solid #444', color: 'white', width: 'auto' }}
+                      className="table-select"
                     >
                       <option>To Do</option>
                       <option>In Progress</option>
                       <option>Done</option>
                     </Form.Select>
                   </td>
+                  <td>
+                    <button
+                      className="delete-task-btn"
+                      onClick={(e) => { e.stopPropagation(); deleteTask(task.id) }}
+                      title="Delete task"
+                    >✕</button>
+                  </td>
                 </tr>
               ))
             )}
           </tbody>
         </Table>
+        <div className="table-footer">
+          <span>{filtered.length} of {tasks.length} task{tasks.length !== 1 ? 's' : ''}</span>
+          <span>{done} completed · {inProg} in progress · {toDo} to do</span>
+        </div>
       </Card>
 
       <AddTaskModal
@@ -382,6 +467,7 @@ function DashboardComp() {
         onUpdate={updateTask}
       />
     </Container>
+    </div>
   )
 }
 

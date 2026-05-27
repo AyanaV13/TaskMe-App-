@@ -1,0 +1,311 @@
+.account-page {
+  min-height: calc(100vh - 56px);
+  background: #111;
+  padding: 40px 20px;
+  color: #e0e0e0;
+}
+
+.account-container {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.account-heading {
+  color: #fff;
+  font-weight: 700;
+  margin-bottom: 24px;
+}
+
+/* Sidebar nav */
+.account-nav .list-group-item {
+  background: #1a1a1a;
+  border-color: #2a2a2a;
+  color: #ccc;
+  font-size: 14px;
+  transition: background 0.15s;
+}
+
+.account-nav .list-group-item:hover,
+.account-nav .list-group-item.active {
+  background: #252525;
+  color: #fff;
+  border-color: #2a2a2a;
+}
+
+.account-nav .danger-tab-link {
+  color: #e74c3c;
+}
+
+.account-nav .danger-tab-link:hover,
+.account-nav .danger-tab-link.active {
+  color: #ff6b6b;
+  background: #1f1010;
+}
+
+/* Tab content */
+.tab-section {
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  padding: 28px;
+}
+
+/* Avatar */
+.avatar-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.avatar-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: #0d6efd;
+  color: #fff;
+  font-size: 28px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Form fields */
+.account-form {
+  max-width: 480px;
+}
+
+.account-field {
+  margin-bottom: 16px;
+}
+
+.account-field label {
+  color: #aaa;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.account-input {
+  background: #252525 !important;
+  border: 1px solid #333 !important;
+  color: #e0e0e0 !important;
+  font-size: 14px;
+}
+
+.account-input:focus {
+  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.3) !important;
+}
+
+.time-input {
+  width: 160px;
+}
+
+/* Toggle row */
+.toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #2a2a2a;
+  font-size: 14px;
+  color: #ccc;
+  max-width: 480px;
+}
+
+/* Account info grid */
+.info-grid {
+  max-width: 480px;
+  margin-bottom: 32px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #2a2a2a;
+  font-size: 14px;
+}
+
+.info-label {
+  color: #aaa;
+}
+
+.info-value {
+  color: #e0e0e0;
+  font-weight: 500;
+}
+
+/* Upgrade */
+.upgrade-section {
+  padding-top: 8px;
+}
+
+.upgrade-desc {
+  color: #888;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.upgrade-btn {
+  font-weight: 600;
+}
+
+/* Day picker */
+.day-picker {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.day-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background: #252525;
+  color: #aaa;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.day-btn:hover {
+  background: #2a2a2a;
+  color: #fff;
+}
+
+.day-btn--active {
+  background: #0d6efd;
+  border-color: #0d6efd;
+  color: #fff;
+}
+
+/* Danger zone */
+.danger-zone {
+  max-width: 480px;
+}
+
+.danger-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.danger-icon {
+  font-size: 20px;
+}
+
+.danger-title {
+  color: #e74c3c;
+  font-weight: 700;
+  margin: 0;
+  font-size: 16px;
+}
+
+.danger-divider {
+  border-color: #3a1a1a;
+  margin: 12px 0 16px;
+}
+
+.danger-desc {
+  color: #888;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+/* ── Light theme overrides ───────────────────────────── */
+[data-bs-theme="light"] .account-page {
+  background: linear-gradient(135deg, #eef4ff 0%, #dbeafe 50%, #e8f0fe 100%);
+  color: #1a2a4a;
+}
+
+[data-bs-theme="light"] .account-heading {
+  color: #1a2a4a;
+}
+
+[data-bs-theme="light"] .account-nav .list-group-item {
+  background: #f0f6ff;
+  border-color: #c5d8f5;
+  color: #2a4060;
+}
+
+[data-bs-theme="light"] .account-nav .list-group-item:hover,
+[data-bs-theme="light"] .account-nav .list-group-item.active {
+  background: #dbeafe;
+  color: #1a2a4a;
+  border-color: #93c5fd;
+}
+
+[data-bs-theme="light"] .account-nav .danger-tab-link {
+  color: #dc2626;
+}
+
+[data-bs-theme="light"] .account-nav .danger-tab-link:hover,
+[data-bs-theme="light"] .account-nav .danger-tab-link.active {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+[data-bs-theme="light"] .tab-section {
+  background: #ffffff;
+  border: 1px solid #c5d8f5;
+}
+
+[data-bs-theme="light"] .account-field label {
+  color: #4a6080;
+}
+
+[data-bs-theme="light"] .account-input {
+  background: #f0f6ff !important;
+  border: 1px solid #b8cfee !important;
+  color: #1a2a4a !important;
+}
+
+[data-bs-theme="light"] .toggle-row {
+  border-bottom: 1px solid #d0e4f8;
+  color: #2a4060;
+}
+
+[data-bs-theme="light"] .info-row {
+  border-bottom: 1px solid #d0e4f8;
+}
+
+[data-bs-theme="light"] .info-label {
+  color: #4a6080;
+}
+
+[data-bs-theme="light"] .info-value {
+  color: #1a2a4a;
+}
+
+[data-bs-theme="light"] .upgrade-desc {
+  color: #4a6080;
+}
+
+[data-bs-theme="light"] .day-btn {
+  background: #f0f6ff;
+  border: 1px solid #b8cfee;
+  color: #2a4060;
+}
+
+[data-bs-theme="light"] .day-btn:hover {
+  background: #dbeafe;
+  color: #1a2a4a;
+}
+
+[data-bs-theme="light"] .day-btn--active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+}
+
+[data-bs-theme="light"] .danger-divider {
+  border-color: #fecaca;
+}
+
+[data-bs-theme="light"] .danger-desc {
+  color: #4a6080;
+}

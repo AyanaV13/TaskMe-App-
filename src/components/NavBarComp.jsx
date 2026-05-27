@@ -8,7 +8,7 @@ import { Button } from 'react-bootstrap'
 import { useAuth } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
 
-const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
 function NavBarComp() {
   const { user, logout } = useAuth()
@@ -34,7 +34,9 @@ function NavBarComp() {
           <Nav.Link onClick={() => navigate('/dashboard')}>Dashboard</Nav.Link>
           <NavDropdown title="Daily Tasks">
             {DAYS.map((day) => (
-              <NavDropdown.Item key={day}>{day}</NavDropdown.Item>
+              <NavDropdown.Item key={day} onClick={() => navigate(`/dashboard?day=${day}`)}>
+                {day}
+              </NavDropdown.Item>
             ))}
           </NavDropdown>
         </Nav>
@@ -43,7 +45,7 @@ function NavBarComp() {
       <Nav className="ms-auto gap-2">
         {user ? (
           <>
-            <Button variant="outline-light">Account</Button>
+            <Button variant="outline-light" onClick={() => navigate('/account')}>Account</Button>
             <Button variant="danger" onClick={handleLogout}>Log Out</Button>
           </>
         ) : (
