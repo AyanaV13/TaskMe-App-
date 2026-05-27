@@ -5,6 +5,7 @@ import Container from 'react-bootstrap/Container'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Card from 'react-bootstrap/Card'
+import './RegisterPage.css'
 
 function RegisterPage() {
   const { login } = useAuth()
@@ -22,8 +23,12 @@ function RegisterPage() {
   }
 
   return (
-    <Container className="d-flex justify-content-center align-items-center" style={{ minHeight: '85vh' }}>
-      <Card bg="dark" text="white" style={{ width: '420px', border: '1px solid #444' }}>
+    <Container className="register-page d-flex flex-column justify-content-center align-items-center">
+      <div className="register-branding text-center mb-4">
+        <div className="register-logo">TaskMe</div>
+        <p className="register-slogan">Organization. Fast. Simple.</p>
+      </div>
+      <Card bg="dark" text="white" className="register-card">
         <Card.Body className="p-4">
           <h3 className="mb-1 fw-bold">Create an account</h3>
           <p className="text-secondary mb-4" style={{ fontSize: '14px' }}>Start managing your tasks with TaskMe</p>
